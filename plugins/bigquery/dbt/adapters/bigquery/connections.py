@@ -39,6 +39,9 @@ BIGQUERY_CREDENTIALS_CONTRACT = {
         'location': {
             'type': 'string',
         },
+        'priority': {
+            'enum': ['interactive', 'batch'],
+        },
     },
     'required': ['method', 'database', 'schema'],
 }
@@ -186,6 +189,11 @@ class BigQueryConnectionManager(BaseConnectionManager):
 
         job_config = google.cloud.bigquery.QueryJobConfig()
         job_config.use_legacy_sql = False
+
+        priority = conn.credentials.get('priority', 'interactive')
+        job_config.priority = bigquery.QueryPriority.BATCH if priority == 'batch' \
+                              else bigquery.QueryPriority.INTERACTIVE
+
         query_job = client.query(sql, job_config)
 
         # this blocks until the query has completed
