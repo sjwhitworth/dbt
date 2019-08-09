@@ -110,7 +110,8 @@ class GraphRunnableTask(ManifestTask):
         # TODO: create+enforce an actual contracts for what `result` is instead
         # of the current free-for-all
         result = runner.run_with_hooks(self.manifest)
-        if result.error is not None and self.raise_on_first_error():
+        should_raise = self.config.args.fail_fast or self.raise_on_first_error()
+        if result.error is not None and should_raise:
             # if we raise inside a thread, it'll just get silently swallowed.
             # stash the error message we want here, and it will check the
             # next 'tick' - should be soon since our thread is about to finish!

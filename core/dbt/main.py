@@ -379,6 +379,14 @@ def _build_run_subparser(subparsers, base_subparser):
         parents=[base_subparser],
         help="Compile SQL and execute against the current "
         "target database.")
+    run_sub.add_argument(
+        '--fail-fast',
+        required=False,
+        action='store_true',
+        help="""
+        Stop running after the first failure.
+        """
+    )
     run_sub.set_defaults(cls=run_task.RunTask, which='run')
     return run_sub
 
@@ -510,6 +518,14 @@ def _build_test_subparser(subparsers, base_subparser):
         '--schema',
         action='store_true',
         help='Run constraint validations from schema.yml files'
+    )
+    sub.add_argument(
+        '--fail-fast',
+        required=False,
+        action='store_true',
+        help="""
+        Stop running after the first failure.
+        """
     )
 
     sub.set_defaults(cls=test_task.TestTask, which='test')
